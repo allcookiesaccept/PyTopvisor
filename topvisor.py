@@ -17,6 +17,9 @@ class Topvisor:
             "get_projects": ("projects", "get_projects"),
             "get_competitors": ("projects", "get_competitors"),
             "get_history": ("positions", "get_history"),
+            "get_summary": ("positions", "get_summary"),
+            "get_summary_chart": ("positions", "get_summary_chart"),
+            "get_searchers_regions": ("positions", "get_searchers_regions"),
         }
 
     def run_task(self, task_name, **kwargs):

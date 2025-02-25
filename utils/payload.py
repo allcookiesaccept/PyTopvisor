@@ -173,3 +173,160 @@ class PayloadFactory:
             payload["filter_by_positions"] = filter_by_positions
 
         return payload
+
+    @staticmethod
+    @add_universal_params
+    def positions_get_summary_payload(
+            project_id: int,
+            region_index: int,
+            dates: List[str],
+            competitor_id: Optional[int] = None,
+            only_exists_first_date: Optional[bool] = None,
+            show_dynamics: Optional[bool] = None,
+            show_tops: Optional[bool] = None,
+            show_avg: Optional[bool] = None,
+            show_visibility: Optional[bool] = None,
+            show_median: Optional[bool] = None,
+    ) -> Dict[str, Any]:
+        """
+        Генерирует payload для метода get/positions_2/summary.
+        :param project_id: ID проекта.
+        :param region_index: Индекс региона.
+        :param dates: Список из двух дат для построения сводки.
+        :param competitor_id: ID конкурента (опционально).
+        :param only_exists_first_date: Учитывать ключевые фразы, присутствующие в обеих датах (boolean).
+        :param show_dynamics: Добавить динамику позиций (boolean).
+        :param show_tops: Добавить данные по ТОПам (boolean).
+        :param show_avg: Добавить среднюю позицию (boolean).
+        :param show_visibility: Добавить видимость (boolean).
+        :param show_median: Добавить медианную позицию (boolean).
+        :return: Payload для запроса.
+        """
+        # Базовая структура payload
+        payload: Dict[str, Any] = {
+            "project_id": project_id,
+            "region_index": region_index,
+            "dates": dates,
+        }
+
+        # Добавление опциональных параметров
+        if competitor_id:
+            payload["competitor_id"] = competitor_id
+        if only_exists_first_date:
+            payload["only_exists_first_date"] = int(only_exists_first_date)
+        if show_dynamics:
+            payload["show_dynamics"] = int(show_dynamics)
+        if show_tops:
+            payload["show_tops"] = int(show_tops)
+        if show_avg:
+            payload["show_avg"] = int(show_avg)
+        if show_visibility:
+            payload["show_visibility"] = int(show_visibility)
+        if show_median:
+            payload["show_median"] = int(show_median)
+
+        return payload
+
+
+    @staticmethod
+    @add_universal_params
+    def positions_get_summary_chart_payload(
+        project_id: int,
+        region_index: int,
+        dates: Optional[List[str]] = None,
+        date1: Optional[str] = None,
+        date2: Optional[str] = None,
+        competitors_ids: Optional[List[int]] = None,
+        type_range: Optional[int] = 2,
+        only_exists_first_date: Optional[bool] = None,
+        show_tops: Optional[bool] = None,
+        show_avg: Optional[bool] = None,
+        show_visibility: Optional[bool] = None,
+    ) -> Dict[str, Any]:
+        """
+        Генерирует payload для метода get/positions_2/summary/chart.
+        :param project_id: ID проекта.
+        :param region_index: Индекс региона.
+        :param dates: Список произвольных дат проверок.
+        :param date1: Начальная дата периода.
+        :param date2: Конечная дата периода.
+        :param competitors_ids: Список ID конкурентов (или ID проекта).
+        :param type_range: Период дат (enum: 0, 1, 2, 3, 4, 5, 6, 7, 100).
+        :param only_exists_first_date: Учитывать ключевые фразы, присутствующие во всех датах (boolean).
+        :param show_tops: Добавить данные по ТОПам (boolean).
+        :param show_avg: Добавить среднюю позицию (boolean).
+        :param show_visibility: Добавить видимость (boolean).
+        :return: Payload для запроса.
+        """
+        # Базовая структура payload
+        payload: Dict[str, Any] = {
+            "project_id": project_id,
+            "region_index": region_index,
+        }
+
+        # Обработка дат
+        if dates:
+            payload["dates"] = dates
+        elif date1 and date2:
+            payload.update({"date1": date1, "date2": date2})
+        else:
+            raise ValueError("Необходимо указать либо 'dates', либо 'date1' и 'date2'.")
+
+        # Добавление опциональных параметров
+        if competitors_ids:
+            payload["competitors_ids"] = competitors_ids
+        if type_range is not None:
+            payload["type_range"] = type_range
+        if only_exists_first_date is not None:
+            payload["only_exists_first_date"] = int(only_exists_first_date)
+        if show_tops is not None:
+            payload["show_tops"] = int(show_tops)
+        if show_avg is not None:
+            payload["show_avg"] = int(show_avg)
+        if show_visibility is not None:
+            payload["show_visibility"] = int(show_visibility)
+
+        return payload
+
+    @staticmethod
+    @add_universal_params
+    def positions_get_searchers_regions_payload(
+            project_id: int,
+            searcher_key: Optional[int] = None,
+            name_key: Optional[str] = None,
+            country_code: Optional[str] = None,
+            lang: Optional[str] = None,
+            device: Optional[int] = None,
+            depth: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        """
+        Генерирует payload для метода get/positions_2/searchers/regions/export.
+        :param project_id: ID проекта.
+        :param searcher_key: Ключ поисковой системы.
+        :param name_key: Название или ключ региона.
+        :param country_code: Двухбуквенный код страны.
+        :param lang: Язык интерфейса.
+        :param device: Тип устройства (enum: 0, 1, 2).
+        :param depth: Глубина проверки.
+        :return: Payload для запроса.
+        """
+        # Базовая структура payload
+        payload: Dict[str, Any] = {
+            "project_id": project_id,
+        }
+
+        # Добавление опциональных параметров
+        if searcher_key is not None:
+            payload["searcher_key"] = searcher_key
+        if name_key:
+            payload["name/key"] = name_key
+        if country_code:
+            payload["country_code"] = country_code
+        if lang:
+            payload["lang"] = lang
+        if device is not None:
+            payload["device"] = device
+        if depth is not None:
+            payload["depth"] = depth
+
+        return payload
