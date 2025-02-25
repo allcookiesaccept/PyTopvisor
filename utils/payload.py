@@ -101,33 +101,38 @@ class PayloadFactory:
             dates: Optional[List[str]] = None,
             date1: Optional[str] = None,
             date2: Optional[str] = None,
-            **kwargs,
+            competitors_ids: Optional[List[int]] = None,
+            type_range: Optional[int] = 2,
+            count_dates: Optional[int] = None,
+            only_exists_first_date: Optional[bool] = None,
+            show_headers: Optional[bool] = None,
+            show_exists_dates: Optional[bool] = None,
+            show_visitors: Optional[bool] = None,
+            show_top_by_depth: Optional[int] = None,
+            positions_fields: Optional[List[str]] = None,
+            filter_by_dynamic: Optional[List[str]] = None,
+            filter_by_positions: Optional[List[List[int]]] = None,
     ) -> Dict[str, Any]:
         """
-        Генерирует payload для метода positions_2/history
+        Генерирует payload для метода get/positions_2/history.
 
-        Обязательные параметры:
-        - project_id: int: ID проекта
-        - regions_indexes: array(int): Список индексов регионов
-
-        Необходимо указать либо:
-        - dates: array of date: Список произвольных дат
-        Или:
-        - date1 и date2: date: Период проверок
-
-        Дополнительные параметры:
-        - fields: array fields: Возвращаемые поля объекта "Ключевая фраза"
-        - competitors_ids: array(int): ID конкурентов (или ID проекта), добавленных в настройках проекта
-        - type_range: enum(0, 1, 2, 3, 4, 5, 6, 7, 100): Период дат
-        - count_dates: int: Максмальное число возвращаемых дат (не более 31)
-        - only_exists_first_date: boolean: Отображать только ключевые фразы, присутствующие в первой проверке указанного периода
-        - show_headers: boolean: Добавить в результат заголовки результатов
-        - show_exists_dates: boolean: Добавить в результат даты, в которых были проверки
-        - show_visitors: boolean: Добавить в результат данные об общем количество визитов по каждой проверке
-        - show_top_by_depth: int: Добавить в результат данные по ТОПу указанной глубины по каждой проверке
-        - positions_fields: array('position', 'snippet', 'relevant_url', 'visitors'): Выбор столбцов данных с результатами проверки
-        - filter_by_dynamic: set('>', '<', '='): Фильтр по ключевым фразам
-        - filter_by_positions: array of array(int, int): Фильтр по ключевым фразам, позиции которых входят в указанные промежутки
+        :param project_id: ID проекта.
+        :param regions_indexes: Список индексов регионов.
+        :param dates: Список произвольных дат проверок.
+        :param date1: Начальная дата периода.
+        :param date2: Конечная дата периода.
+        :param competitors_ids: Список ID конкурентов (или ID проекта).
+        :param type_range: Период дат (enum: 0, 1, 2, 3, 4, 5, 6, 7, 100).
+        :param count_dates: Максимальное число возвращаемых дат (не более 31).
+        :param only_exists_first_date: Отображать только ключевые фразы, присутствующие в первой проверке.
+        :param show_headers: Добавить заголовки результатов.
+        :param show_exists_dates: Добавить даты, в которых были проверки.
+        :param show_visitors: Добавить данные об общем количестве визитов.
+        :param show_top_by_depth: Добавить данные по ТОПу указанной глубины.
+        :param positions_fields: Выбор столбцов данных с результатами проверки.
+        :param filter_by_dynamic: Фильтр по ключевым фразам.
+        :param filter_by_positions: Фильтр по позициям ключевых фраз.
+        :return: Payload для запроса.
         """
         # Базовая структура payload
         payload: Dict[str, Any] = {
@@ -141,27 +146,30 @@ class PayloadFactory:
         elif date1 and date2:
             payload.update({"date1": date1, "date2": date2})
         else:
-            raise ValueError("Необходимо указать либо 'dates', либо 'date1' и 'date2'")
+            raise ValueError("Необходимо указать либо 'dates', либо 'date1' и 'date2'.")
 
         # Добавление опциональных параметров
-        optional_params = [
-            "fields",
-            "competitors_ids",
-            "type_range",
-            "count_dates",
-            "only_exists_first_date",
-            "show_headers",
-            "show_exists_dates",
-            "show_visitors",
-            "show_top_by_depth",
-            "positions_fields",
-            "filter_by_dynamic",
-            "filter_by_positions",
-        ]
-
-        for param in optional_params:
-            value = locals().get(param)
-            if value is not None:
-                payload[param] = value
+        if competitors_ids:
+            payload["competitors_ids"] = competitors_ids
+        if type_range is not None:
+            payload["type_range"] = type_range
+        if count_dates is not None:
+            payload["count_dates"] = count_dates
+        if only_exists_first_date is not None:
+            payload["only_exists_first_date"] = int(only_exists_first_date)
+        if show_headers is not None:
+            payload["show_headers"] = int(show_headers)
+        if show_exists_dates is not None:
+            payload["show_exists_dates"] = int(show_exists_dates)
+        if show_visitors is not None:
+            payload["show_visitors"] = int(show_visitors)
+        if show_top_by_depth is not None:
+            payload["show_top_by_depth"] = show_top_by_depth
+        if positions_fields:
+            payload["positions_fields"] = positions_fields
+        if filter_by_dynamic:
+            payload["filter_by_dynamic"] = filter_by_dynamic
+        if filter_by_positions:
+            payload["filter_by_positions"] = filter_by_positions
 
         return payload
