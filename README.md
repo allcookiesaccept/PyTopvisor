@@ -20,7 +20,6 @@ Currently, the library supports the following operations:
 - **get_history**: Retrieve the history of position checks.
 - **get_summary**: Retrieve a summary of positions for two dates.
 - **get_summary_chart**: Retrieve data for a summary chart.
-- **get_searchers_regions**: Export a list of regions added to the project (currently in testing).
 
 ### Retrieving a List of Projects
 The method `get_projects` allows you to retrieve a list of all projects available for your account. 
@@ -136,7 +135,6 @@ topvisor = Topvisor(user_id="your_user_id", api_key="your_api_key")
 - **get_history**: Получение истории проверок позиций.
 - **get_summary**: Получение сводки по позициям за две даты.
 - **get_summary_chart**: Получение данных для графика сводки.
-- **get_searchers_regions**: Экспорт списка регионов, добавленных в проект. (пока в тестовом режиме)
 
 ### Получение списка проектов
 Метод `get_projects` позволяет получить список всех проектов, доступных для вашего аккаунта. Вы можете указать дополнительные параметры, такие как `show_site_stat` (показывать статистику сайта), `show_searchers_and_regions` (показывать поисковые системы и регионы) и `include_positions_summary` (включать сводку по позициям).
