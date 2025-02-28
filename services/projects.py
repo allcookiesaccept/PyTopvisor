@@ -18,7 +18,7 @@ class ProjectsService(BaseService):
             include_positions_summary: Optional[bool] = None,
     ):
         """
-        Получает список проектов.
+        Retrieves a list of projects.
         """
         payload = PayloadFactory.projects_get_projects_payload(
             show_site_stat=show_site_stat,
@@ -35,7 +35,7 @@ class ProjectsService(BaseService):
             include_project: Optional[bool] = None,
     ):
         """
-        Получает список проектов.
+        Retrieves a list of competitors.
         """
         payload = PayloadFactory.projects_get_competitors_payload(
             project_id=project_id,

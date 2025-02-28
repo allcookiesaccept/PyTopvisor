@@ -15,6 +15,6 @@ class ServiceFactory:
             elif service_name == "positions":
                 self._services[service_name] = PositionsService(self.api_client)
             else:
-                raise ValueError(f"Неизвестный сервис: {service_name}")
+                raise ValueError(f"Unknown service: {service_name}")
         return self._services[service_name]
 

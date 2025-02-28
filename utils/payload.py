@@ -4,16 +4,16 @@ from functools import wraps
 
 def add_universal_params(func: Callable) -> Callable:
     """
-    Декоратор для добавления универсальных параметров в payload.
-    Поддерживаемые параметры: limit, offset, fields, filters, id, orders.
+    Decorator to add universal parameters to the payload.
+    Supported parameters: limit, offset, fields, filters, id, orders.
     """
 
     @wraps(func)
     def wrapper(*args, **kwargs) -> Dict[str, Any]:
-        # Вызов основного метода для получения базового payload
+        # Call the main method to get the base payload
         payload = func(*args, **kwargs)
 
-        # Универсальные параметры
+        # Universal parameters
         universal_params = {
             "limit": int,
             "offset": int,
@@ -23,7 +23,7 @@ def add_universal_params(func: Callable) -> Callable:
             "orders": list,
         }
 
-        # Добавление универсальных параметров, если они переданы
+        # Add universal parameters if they are passed
         for param, param_type in universal_params.items():
             if param in kwargs:
                 value = kwargs[param]
@@ -49,11 +49,11 @@ class PayloadFactory:
             ) -> Dict[str, Any] | None:
 
         """
-        Генерирует payload для метода get/projects_2/projects.
-        :param show_site_stat: Добавить дополнительную информацию о проекте (boolean).
-        :param show_searchers_and_regions: Добавить список поисковых систем и регионов (0, 1, 2).
-        :param include_positions_summary: Добавить сводку по позициям (boolean).
-        :return: Payload для запроса.
+        Generates payload for the method get/projects_2/projects.
+        :param show_site_stat: Add additional project information (boolean).
+        :param show_searchers_and_regions: Add a list of search engines and regions (0, 1, 2).
+        :param include_positions_summary: Add a summary of positions (boolean).
+        :return: Payload for the request.
         """
         payload = {}
 
@@ -75,11 +75,11 @@ class PayloadFactory:
     ) -> Dict[str, Any]:
 
         """
-        Генерирует payload для метода get/projects_2/competitors.
-        :param show_site_stat: Добавить дополнительную информацию о проекте (boolean).
-        :param show_searchers_and_regions: Добавить список поисковых систем и регионов (0, 1, 2).
-        :param include_positions_summary: Добавить сводку по позициям (boolean).
-        :return: Payload для запроса.
+        Generates payload for the method get/projects_2/competitors.
+        :param project_id: Project ID.
+        :param only_enabled: Show only enabled competitors (boolean).
+        :param include_project: Include the project itself in the list (boolean).
+        :return: Payload for the request.
         """
         payload = {
             "project_id": project_id,
@@ -114,33 +114,33 @@ class PayloadFactory:
             filter_by_positions: Optional[List[List[int]]] = None,
     ) -> Dict[str, Any]:
         """
-        Генерирует payload для метода get/positions_2/history.
+        Generates payload for the method get/positions_2/history.
 
-        :param project_id: ID проекта.
-        :param regions_indexes: Список индексов регионов.
-        :param dates: Список произвольных дат проверок.
-        :param date1: Начальная дата периода.
-        :param date2: Конечная дата периода.
-        :param competitors_ids: Список ID конкурентов (или ID проекта).
-        :param type_range: Период дат (enum: 0, 1, 2, 3, 4, 5, 6, 7, 100).
-        :param count_dates: Максимальное число возвращаемых дат (не более 31).
-        :param only_exists_first_date: Отображать только ключевые фразы, присутствующие в первой проверке.
-        :param show_headers: Добавить заголовки результатов.
-        :param show_exists_dates: Добавить даты, в которых были проверки.
-        :param show_visitors: Добавить данные об общем количестве визитов.
-        :param show_top_by_depth: Добавить данные по ТОПу указанной глубины.
-        :param positions_fields: Выбор столбцов данных с результатами проверки.
-        :param filter_by_dynamic: Фильтр по ключевым фразам.
-        :param filter_by_positions: Фильтр по позициям ключевых фраз.
-        :return: Payload для запроса.
+        :param project_id: Project ID.
+        :param regions_indexes: List of region indexes.
+        :param dates: List of arbitrary check dates.
+        :param date1: Start date of the period.
+        :param date2: End date of the period.
+        :param competitors_ids: List of competitor IDs (or project ID).
+        :param type_range: Date range (enum: 0, 1, 2, 3, 4, 5, 6, 7, 100).
+        :param count_dates: Maximum number of returned dates (no more than 31).
+        :param only_exists_first_date: Display only keywords present in the first check.
+        :param show_headers: Add result headers.
+        :param show_exists_dates: Add dates with checks.
+        :param show_visitors: Add data about total visits.
+        :param show_top_by_depth: Add data for the specified depth of the TOP.
+        :param positions_fields: Select columns of data with check results.
+        :param filter_by_dynamic: Filter by keywords.
+        :param filter_by_positions: Filter by keyword positions.
+        :return: Payload for the request.
         """
-        # Базовая структура payload
+        # Base payload structure
         payload: Dict[str, Any] = {
             "project_id": project_id,
             "regions_indexes": regions_indexes,
         }
 
-        # Обработка дат
+        # Handle dates
         if dates:
             payload["dates"] = dates
         elif date1 and date2:
@@ -148,7 +148,7 @@ class PayloadFactory:
         else:
             raise ValueError("Необходимо указать либо 'dates', либо 'date1' и 'date2'.")
 
-        # Добавление опциональных параметров
+        # Add optional parameters
         if competitors_ids:
             payload["competitors_ids"] = competitors_ids
         if type_range is not None:
@@ -189,27 +189,27 @@ class PayloadFactory:
             show_median: Optional[bool] = None,
     ) -> Dict[str, Any]:
         """
-        Генерирует payload для метода get/positions_2/summary.
-        :param project_id: ID проекта.
-        :param region_index: Индекс региона.
-        :param dates: Список из двух дат для построения сводки.
-        :param competitor_id: ID конкурента (опционально).
-        :param only_exists_first_date: Учитывать ключевые фразы, присутствующие в обеих датах (boolean).
-        :param show_dynamics: Добавить динамику позиций (boolean).
-        :param show_tops: Добавить данные по ТОПам (boolean).
-        :param show_avg: Добавить среднюю позицию (boolean).
-        :param show_visibility: Добавить видимость (boolean).
-        :param show_median: Добавить медианную позицию (boolean).
-        :return: Payload для запроса.
+        Generates payload for the method get/positions_2/summary.
+        :param project_id: Project ID.
+        :param region_index: Region index.
+        :param dates: List of two dates for building the summary.
+        :param competitor_id: Competitor ID (optional).
+        :param only_exists_first_date: Consider keywords present in both dates (boolean).
+        :param show_dynamics: Add position dynamics (boolean).
+        :param show_tops: Add TOP data (boolean).
+        :param show_avg: Add average position (boolean).
+        :param show_visibility: Add visibility (boolean).
+        :param show_median: Add median position (boolean).
+        :return: Payload for the request.
         """
-        # Базовая структура payload
+        # Base payload structure
         payload: Dict[str, Any] = {
             "project_id": project_id,
             "region_index": region_index,
             "dates": dates,
         }
 
-        # Добавление опциональных параметров
+        # Add optional parameters
         if competitor_id:
             payload["competitor_id"] = competitor_id
         if only_exists_first_date:
@@ -244,27 +244,27 @@ class PayloadFactory:
         show_visibility: Optional[bool] = None,
     ) -> Dict[str, Any]:
         """
-        Генерирует payload для метода get/positions_2/summary/chart.
-        :param project_id: ID проекта.
-        :param region_index: Индекс региона.
-        :param dates: Список произвольных дат проверок.
-        :param date1: Начальная дата периода.
-        :param date2: Конечная дата периода.
-        :param competitors_ids: Список ID конкурентов (или ID проекта).
-        :param type_range: Период дат (enum: 0, 1, 2, 3, 4, 5, 6, 7, 100).
-        :param only_exists_first_date: Учитывать ключевые фразы, присутствующие во всех датах (boolean).
-        :param show_tops: Добавить данные по ТОПам (boolean).
-        :param show_avg: Добавить среднюю позицию (boolean).
-        :param show_visibility: Добавить видимость (boolean).
-        :return: Payload для запроса.
+        Generates payload for the method get/positions_2/summary/chart.
+        :param project_id: Project ID.
+        :param region_index: Region index.
+        :param dates: List of arbitrary check dates.
+        :param date1: Start date of the period.
+        :param date2: End date of the period.
+        :param competitors_ids: List of competitor IDs (or project ID).
+        :param type_range: Date range (enum: 0, 1, 2, 3, 4, 5, 6, 7, 100).
+        :param only_exists_first_date: Consider keywords present in all dates (boolean).
+        :param show_tops: Add TOP data (boolean).
+        :param show_avg: Add average position (boolean).
+        :param show_visibility: Add visibility (boolean).
+        :return: Payload for the request.
         """
-        # Базовая структура payload
+        # Base payload structure
         payload: Dict[str, Any] = {
             "project_id": project_id,
             "region_index": region_index,
         }
 
-        # Обработка дат
+        # Handle dates
         if dates:
             payload["dates"] = dates
         elif date1 and date2:
@@ -272,7 +272,7 @@ class PayloadFactory:
         else:
             raise ValueError("Необходимо указать либо 'dates', либо 'date1' и 'date2'.")
 
-        # Добавление опциональных параметров
+        # Add optional parameters
         if competitors_ids:
             payload["competitors_ids"] = competitors_ids
         if type_range is not None:
@@ -300,22 +300,22 @@ class PayloadFactory:
             depth: Optional[int] = None,
     ) -> Dict[str, Any]:
         """
-        Генерирует payload для метода get/positions_2/searchers/regions/export.
-        :param project_id: ID проекта.
-        :param searcher_key: Ключ поисковой системы.
-        :param name_key: Название или ключ региона.
-        :param country_code: Двухбуквенный код страны.
-        :param lang: Язык интерфейса.
-        :param device: Тип устройства (enum: 0, 1, 2).
-        :param depth: Глубина проверки.
-        :return: Payload для запроса.
+        Generates payload for the method get/positions_2/searchers/regions/export.
+        :param project_id: Project ID.
+        :param searcher_key: Search engine key.
+        :param name_key: Name or region key.
+        :param country_code: Two-letter country code.
+        :param lang: Interface language.
+        :param device: Device type (enum: 0, 1, 2).
+        :param depth: Check depth.
+        :return: Payload for the request.
         """
-        # Базовая структура payload
+        # Base payload structure
         payload: Dict[str, Any] = {
             "project_id": project_id,
         }
 
-        # Добавление опциональных параметров
+        # Add optional parameters
         if searcher_key is not None:
             payload["searcher_key"] = searcher_key
         if name_key:

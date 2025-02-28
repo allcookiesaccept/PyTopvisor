@@ -19,24 +19,24 @@ class TopvisorAPI:
             response = requests.post(url, headers=self.headers, json=payload)
             response.raise_for_status()
 
-            # Логирование успешного запроса
-            logger.debug(f"Запрос к API выполнен успешно: {url}")
+            # Logging a successful request
+            logger.debug(f"API request completed successfully: {url}")
 
-            # Попытка распарсить ответ как JSON
+            # Attempt to parse the response as JSON
             try:
                 data = response.json()
             except ValueError as e:
-                logger.error(f"Ошибка парсинга JSON: {e}. Ответ: {response.text}")
-                raise RuntimeError("Ответ от API не является валидным JSON.")
+                logger.error(f"JSON parsing error: {e}. Response: {response.text}")
+                raise RuntimeError("Response from API is not valid JSON.")
 
-            # Проверка наличия ошибок в ответе
+            # Check for errors in the response
             if "errors" in data and data["errors"]:
                 self._handle_api_errors(url, data["errors"])
 
             return data
 
         except requests.exceptions.RequestException as e:
-            logger.error(f"Ошибка при запросе к API: {e}")
+            logger.error(f"Error during API request: {e}")
             raise
 
     def send_text_request(self, endpoint, payload):
@@ -44,27 +44,26 @@ class TopvisorAPI:
             url = f"{self.base_url}{endpoint}"
             response = requests.post(url, headers=self.headers, json=payload)
             response.raise_for_status()
-            logger.debug(f"Запрос к API выполнен успешно: {url}")
+            logger.debug(f"API request completed successfully: {url}")
             return self.parse_text_response(response.text)
 
         except requests.exceptions.RequestException as e:
-            logger.error(f"Ошибка при запросе к API: {e}")
+            logger.error(f"Error during API request: {e}")
             raise
 
     def parse_text_response(self, text, delimiter=";"):
         """
-        Парсит текстовый ответ в формате CSV с указанным разделителем.
-        :param text: Текстовый ответ от API.
-        :param delimiter: Разделитель, используемый в тексте (по умолчанию ';').
-        :return: Список списков с данными.
+        Parses a text response in CSV format with a specified delimiter.
+        :param text: Text response from the API.
+        :param delimiter: Delimiter used in the text (default ';').
+        :return: A list of lists containing the data.
         """
-        # Разделяем текст на строки
+
         decoded_text = text.encode('raw_unicode_escape').decode('cp1251')
         lines = decoded_text.strip().split("\n")
         result = []
 
         for line in lines:
-            # Разделяем строку по указанному разделителю
             values = line.split(delimiter)
             result.append(values)
 
@@ -72,15 +71,15 @@ class TopvisorAPI:
 
     def _handle_api_errors(self, url, errors):
         """
-        Обрабатывает ошибки API и выбрасывает соответствующие исключения.
+        Handles API errors and raises appropriate exceptions.
         """
         for error in errors:
             code = error.get("code")
-            message = error.get("string", "Неизвестная ошибка")
+            message = error.get("string", "Unknown error")
             detail = error.get("detail", "")
 
             # Логирование ошибки
-            logger.error(f"Ошибка API [{code}]: {message}. Подробности: {detail}. URL: {url}")
+            logger.error(f"API Error [{code}]: {message}. Details: {detail}. URL: {url}")
 
             # Выбор исключения на основе кода ошибки
             exception_class = ERROR_MAPPING.get(code, TopvisorAPIError)

@@ -12,38 +12,36 @@ class Logger:
 
     def _setup_logger(self, log_file):
         """
-        Настройка логгера.
+        Logger setup.
         """
         self.logger = logging.getLogger("TopvisorLogger")
         self.logger.setLevel(logging.DEBUG)
 
-        # Создание директории для логов, если её нет
+        # Create logs directory if it doesn't exist
         logs_dir = Path(__file__).resolve().parent.parent / "logs"
         logs_dir.mkdir(exist_ok=True)
 
-        # Формат логов
+        # Log format
         formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 
-        # Логирование в файл
-        file_handler = logging.FileHandler(logs_dir / log_file, encoding="utf-8")
-        file_handler.setLevel(logging.DEBUG)
-        file_handler.setFormatter(formatter)
+        # File logging
+        api_error_handler = logging.FileHandler(logs_dir / "api_errors.log", encoding="utf-8")
+        api_error_handler.setLevel(logging.ERROR)
+        api_error_handler.setFormatter(formatter)
+        self.logger.addHandler(api_error_handler)
 
-        # Логирование в консоль (опционально)
+        # Console logging
         console_handler = logging.StreamHandler()
         console_handler.setLevel(logging.INFO)
         console_handler.setFormatter(formatter)
-
-        # Добавление обработчиков
-        self.logger.addHandler(file_handler)
         self.logger.addHandler(console_handler)
+
 
     def get_logger(self):
         """
-        Возвращает экземпляр логгера.
+        Returns the logger instance.
         """
         return self.logger
 
 
-# Глобальный экземпляр логгера
 logger = Logger().get_logger()

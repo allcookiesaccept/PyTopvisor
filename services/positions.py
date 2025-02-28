@@ -35,40 +35,40 @@ class PositionsService(BaseService):
         filter_by_positions: Optional[List[List[int]]] = None,
     ):
         """
-        Получает историю проверки позиций.
-        :param project_id: ID проекта (обязательный).
-        :param regions_indexes: Список индексов регионов (обязательный).
-        :param dates: Список произвольных дат проверок (в формате YYYY-MM-DD).
-        :param date1: Начальная дата периода (в формате YYYY-MM-DD).
-        :param date2: Конечная дата периода (в формате YYYY-MM-DD).
-        :param competitors_ids: Список ID конкурентов.
-        :param type_range: Период дат (enum: 0-7, 100).
-        :param count_dates: Максимальное число возвращаемых дат (не более 31).
-        :param only_exists_first_date: Отображать только ключевые фразы, присутствующие в первой проверке.
-        :param show_headers: Добавить заголовки результатов.
-        :param show_exists_dates: Добавить даты проверок.
-        :param show_visitors: Добавить данные о количестве визитов.
-        :param show_top_by_depth: Добавить данные по ТОПу указанной глубины.
-        :param positions_fields: Выбор столбцов данных с результатами проверки.
-        :param filter_by_dynamic: Фильтр по динамике ключевых фраз.
-        :param filter_by_positions: Фильтр по позициям ключевых фраз.
-        :return: Результат запроса.
+        Retrieves the history of position checks.
+        :param project_id: Project ID (required).
+        :param regions_indexes: List of region indexes (required).
+        :param dates: List of arbitrary check dates (in YYYY-MM-DD format).
+        :param date1: Start date of the period (in YYYY-MM-DD format).
+        :param date2: End date of the period (in YYYY-MM-DD format).
+        :param competitors_ids: List of competitor IDs.
+        :param type_range: Date range (enum: 0-7, 100).
+        :param count_dates: Maximum number of returned dates (no more than 31).
+        :param only_exists_first_date: Display only keywords present in the first check.
+        :param show_headers: Add result headers.
+        :param show_exists_dates: Add check dates.
+        :param show_visitors: Add visitor data.
+        :param show_top_by_depth: Add data for the specified depth of the TOP.
+        :param positions_fields: Select columns of data with check results.
+        :param filter_by_dynamic: Filter by keyword dynamics.
+        :param filter_by_positions: Filter by keyword positions.
+        :return: Request result.
         """
-        # Валидация обязательных параметров
+        # Validate required parameters
         if not isinstance(project_id, int):
-            raise ValueError("project_id должен быть целым числом.")
+            raise ValueError("project_id must be an integer.")
         if not isinstance(regions_indexes, list) or not all(isinstance(idx, int) for idx in regions_indexes):
-            raise ValueError("regions_indexes должен быть списком целых чисел.")
+            raise ValueError("regions_indexes must be a list of integers.")
 
-        # Валидация дат
+        # Validate dates
         if dates and (date1 or date2):
-            raise ValueError("Нельзя одновременно передавать 'dates' и 'date1/date2'.")
+            raise ValueError("Cannot pass both 'dates' and 'date1/date2'.")
         if (date1 and not date2) or (date2 and not date1):
-            raise ValueError("Необходимо указать оба параметра: 'date1' и 'date2'.")
+            raise ValueError("Both 'date1' and 'date2' must be specified.")
         if dates and not all(isinstance(date, str) and len(date) == 10 for date in dates):
-            raise ValueError("Все элементы в 'dates' должны быть строками в формате YYYY-MM-DD.")
+            raise ValueError("All elements in 'dates' must be strings in YYYY-MM-DD format.")
         if date1 and not isinstance(date1, str) or date2 and not isinstance(date2, str):
-            raise ValueError("Параметры 'date1' и 'date2' должны быть строками в формате YYYY-MM-DD.")
+            raise ValueError("Parameters 'date1' and 'date2' must be strings in YYYY-MM-DD format.")
 
         # Формирование payload
         try:
@@ -91,8 +91,7 @@ class PositionsService(BaseService):
                 filter_by_positions=filter_by_positions,
             )
         except Exception as e:
-            raise RuntimeError(f"Ошибка при формировании payload: {e}")
-
+            raise RuntimeError(f"Error while forming payload: {e}")
 
         return self.send_request(self.endpoints["history"], payload)
 
@@ -110,30 +109,29 @@ class PositionsService(BaseService):
             show_median: Optional[bool] = None,
     ):
         """
-        Получает данные сводки по выбранному проекту за две даты.
-        :param project_id: ID проекта.
-        :param region_index: Индекс региона.
-        :param dates: Список из двух дат для построения сводки.
-        :param competitor_id: ID конкурента (опционально).
-        :param only_exists_first_date: Учитывать ключевые фразы, присутствующие в обеих датах (boolean).
-        :param show_dynamics: Добавить динамику позиций (boolean).
-        :param show_tops: Добавить данные по ТОПам (boolean).
-        :param show_avg: Добавить среднюю позицию (boolean).
-        :param show_visibility: Добавить видимость (boolean).
-        :param show_median: Добавить медианную позицию (boolean).
-        :return: Результат запроса.
+        Retrieves summary data for the selected project over two dates.
+        :param project_id: Project ID.
+        :param region_index: Region index.
+        :param dates: List of two dates for building the summary.
+        :param competitor_id: Competitor ID (optional).
+        :param only_exists_first_date: Consider keywords present in both dates (boolean).
+        :param show_dynamics: Add position dynamics (boolean).
+        :param show_tops: Add TOP data (boolean).
+        :param show_avg: Add average position (boolean).
+        :param show_visibility: Add visibility (boolean).
+        :param show_median: Add median position (boolean).
+        :return: Request result.
         """
-        # Валидация обязательных параметров
+        # Validate required parameters
         if not isinstance(project_id, int):
-            raise ValueError("project_id должен быть целым числом.")
+            raise ValueError("project_id must be an integer.")
         if not isinstance(region_index, int):
-            raise ValueError("region_index должен быть целым числом.")
+            raise ValueError("region_index must be an integer.")
         if not isinstance(dates, list) or len(dates) != 2:
-            raise ValueError("dates должен быть списком из двух дат.")
+            raise ValueError("dates must be a list of two dates.")
         if not all(isinstance(date, str) and len(date) == 10 for date in dates):
-            raise ValueError("Все элементы в 'dates' должны быть строками в формате YYYY-MM-DD.")
+            raise ValueError("All elements in 'dates' must be strings in YYYY-MM-DD format.")
 
-        # Формирование payload
         try:
             payload = PayloadFactory.positions_get_summary_payload(
                 project_id=project_id,
@@ -148,7 +146,7 @@ class PositionsService(BaseService):
                 show_median=show_median,
             )
         except Exception as e:
-            raise RuntimeError(f"Ошибка при формировании payload: {e}")
+            raise RuntimeError(f"Error while forming payload: {e}")
 
         return self.send_request(self.endpoints["summary"], payload)
 
@@ -167,35 +165,34 @@ class PositionsService(BaseService):
             show_visibility: Optional[bool] = None,
     ):
         """
-        Получает данные для графика сводки по выбранному проекту.
-        :param project_id: ID проекта.
-        :param region_index: Индекс региона.
-        :param dates: Список произвольных дат проверок.
-        :param date1: Начальная дата периода.
-        :param date2: Конечная дата периода.
-        :param competitors_ids: Список ID конкурентов (или ID проекта).
-        :param type_range: Период дат (enum: 0, 1, 2, 3, 4, 5, 6, 7, 100).
-        :param only_exists_first_date: Учитывать ключевые фразы, присутствующие во всех датах (boolean).
-        :param show_tops: Добавить данные по ТОПам (boolean).
-        :param show_avg: Добавить среднюю позицию (boolean).
-        :param show_visibility: Добавить видимость (boolean).
-        :return: Результат запроса.
+        Retrieves data for the summary chart for the selected project.
+        :param project_id: Project ID.
+        :param region_index: Region index.
+        :param dates: List of arbitrary check dates.
+        :param date1: Start date of the period.
+        :param date2: End date of the period.
+        :param competitors_ids: List of competitor IDs (or project ID).
+        :param type_range: Date range (enum: 0, 1, 2, 3, 4, 5, 6, 7, 100).
+        :param only_exists_first_date: Consider keywords present in all dates (boolean).
+        :param show_tops: Add TOP data (boolean).
+        :param show_avg: Add average position (boolean).
+        :param show_visibility: Add visibility (boolean).
+        :return: Request result.
         """
-        # Валидация обязательных параметров
+        # Validate required parameters
         if not isinstance(project_id, int):
-            raise ValueError("project_id должен быть целым числом.")
+            raise ValueError("project_id must be an integer.")
         if not isinstance(region_index, int):
-            raise ValueError("region_index должен быть целым числом.")
+            raise ValueError("region_index must be an integer.")
         if dates and (date1 or date2):
-            raise ValueError("Нельзя одновременно передавать 'dates' и 'date1/date2'.")
+            raise ValueError("Cannot pass both 'dates' and 'date1/date2'.")
         if (date1 and not date2) or (date2 and not date1):
-            raise ValueError("Необходимо указать оба параметра: 'date1' и 'date2'.")
+            raise ValueError("Both 'date1' and 'date2' must be specified.")
         if dates and not all(isinstance(date, str) and len(date) == 10 for date in dates):
-            raise ValueError("Все элементы в 'dates' должны быть строками в формате YYYY-MM-DD.")
+            raise ValueError("All elements in 'dates' must be strings in YYYY-MM-DD format.")
         if date1 and not isinstance(date1, str) or date2 and not isinstance(date2, str):
-            raise ValueError("Параметры 'date1' и 'date2' должны быть строками в формате YYYY-MM-DD.")
+            raise ValueError("Parameters 'date1' and 'date2' must be strings in YYYY-MM-DD format.")
 
-        # Формирование payload
         try:
             payload = PayloadFactory.positions_get_summary_chart_payload(
                 project_id=project_id,
@@ -211,7 +208,7 @@ class PositionsService(BaseService):
                 show_visibility=show_visibility,
             )
         except Exception as e:
-            raise RuntimeError(f"Ошибка при формировании payload: {e}")
+            raise RuntimeError(f"Error while forming payload: {e}")
 
         return self.send_request(self.endpoints["summary_chart"], payload)
 
@@ -226,33 +223,32 @@ class PositionsService(BaseService):
             depth: Optional[int] = None,
     ):
         """
-        Экспортирует список регионов, добавленных в проект.
-        :param project_id: ID проекта.
-        :param searcher_key: Ключ поисковой системы.
-        :param name_key: Название или ключ региона.
-        :param country_code: Двухбуквенный код страны.
-        :param lang: Язык интерфейса.
-        :param device: Тип устройства (enum: 0, 1, 2).
-        :param depth: Глубина проверки.
-        :return: Результат запроса.
+        Exports a list of regions added to the project.
+        :param project_id: Project ID.
+        :param searcher_key: Search engine key.
+        :param name_key: Name or region key.
+        :param country_code: Two-letter country code.
+        :param lang: Interface language.
+        :param device: Device type (enum: 0, 1, 2).
+        :param depth: Check depth.
+        :return: Request result.
         """
-        # Валидация параметров
+        # Validate parameters
         if not isinstance(project_id, int):
-            raise ValueError("project_id должен быть целым числом.")
+            raise ValueError("project_id must be an integer.")
         if searcher_key and not isinstance(searcher_key, int):
-            raise ValueError("searcher_key должен быть целым числом.")
+            raise ValueError("searcher_key must be an integer.")
         if name_key and not isinstance(name_key, str):
-            raise ValueError("name_key должен быть строкой.")
+            raise ValueError("name_key must be a string.")
         if country_code and (not isinstance(country_code, str) or len(country_code) != 2):
-            raise ValueError("country_code должен быть двухбуквенным кодом страны.")
+            raise ValueError("country_code must be a two-letter country code.")
         if lang and not isinstance(lang, str):
-            raise ValueError("lang должен быть строкой.")
+            raise ValueError("lang must be a string.")
         if device is not None and device not in (0, 1, 2):
-            raise ValueError("device должен быть одним из значений: 0, 1, 2.")
+            raise ValueError("device must be one of the values: 0, 1, 2.")
         if depth is not None and not isinstance(depth, int):
-            raise ValueError("depth должен быть целым числом.")
+            raise ValueError("depth must be an integer.")
 
-        # Формирование payload
         try:
             payload = PayloadFactory.positions_get_searchers_regions_payload(
                 project_id=project_id,
@@ -264,6 +260,6 @@ class PositionsService(BaseService):
                 depth=depth,
             )
         except Exception as e:
-            raise RuntimeError(f"Ошибка при формировании payload: {e}")
+            raise RuntimeError(f"Error while forming payload: {e}")
 
         return self.send_text_request(self.endpoints["searchers_regions_export"], payload)
