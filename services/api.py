@@ -1,5 +1,6 @@
 import requests
 from utils.logger import logger
+from exceptions import *
 
 
 class TopvisorAPI:
@@ -18,14 +19,34 @@ class TopvisorAPI:
             response = requests.post(url, headers=self.headers, json=payload)
             response.raise_for_status()
 
-            if response.status_code != 200:
-                raise RuntimeError(f"API вернул ошибку: {response.status_code}, {response.text}")
+            # Логирование успешного запроса
+            logger.debug(f"Запрос к API выполнен успешно: {url}")
+
+            # Попытка распарсить ответ как JSON
             try:
-                logger.debug(f"Запрос к API выполнен успешно: {url}")
-                return response.json()
-            except ValueError:
-                return self.parse_text_response(response.text)
-            return response.json()
+                data = response.json()
+            except ValueError as e:
+                logger.error(f"Ошибка парсинга JSON: {e}. Ответ: {response.text}")
+                raise RuntimeError("Ответ от API не является валидным JSON.")
+
+            # Проверка наличия ошибок в ответе
+            if "errors" in data and data["errors"]:
+                self._handle_api_errors(url, data["errors"])
+
+            return data
+
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Ошибка при запросе к API: {e}")
+            raise
+
+    def send_text_request(self, endpoint, payload):
+        try:
+            url = f"{self.base_url}{endpoint}"
+            response = requests.post(url, headers=self.headers, json=payload)
+            response.raise_for_status()
+            logger.debug(f"Запрос к API выполнен успешно: {url}")
+            return self.parse_text_response(response.text)
+
         except requests.exceptions.RequestException as e:
             logger.error(f"Ошибка при запросе к API: {e}")
             raise
@@ -48,3 +69,19 @@ class TopvisorAPI:
             result.append(values)
 
         return result
+
+    def _handle_api_errors(self, url, errors):
+        """
+        Обрабатывает ошибки API и выбрасывает соответствующие исключения.
+        """
+        for error in errors:
+            code = error.get("code")
+            message = error.get("string", "Неизвестная ошибка")
+            detail = error.get("detail", "")
+
+            # Логирование ошибки
+            logger.error(f"Ошибка API [{code}]: {message}. Подробности: {detail}. URL: {url}")
+
+            # Выбор исключения на основе кода ошибки
+            exception_class = ERROR_MAPPING.get(code, TopvisorAPIError)
+            raise exception_class(f"[{code}] {message}. {detail}")

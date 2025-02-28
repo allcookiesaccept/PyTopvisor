@@ -266,4 +266,4 @@ class PositionsService(BaseService):
         except Exception as e:
             raise RuntimeError(f"Ошибка при формировании payload: {e}")
 
-        return self.send_request(self.endpoints["searchers_regions_export"], payload)
+        return self.send_text_request(self.endpoints["searchers_regions_export"], payload)

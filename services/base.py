@@ -7,3 +7,7 @@ class BaseService(ABC):
     def send_request(self, endpoint, payload):
 
         return self.api_client.send_request(endpoint, payload)
+
+    def send_text_request(self, endpoint, payload):
+
+        return self.api_client.send_text_request(endpoint, payload)
