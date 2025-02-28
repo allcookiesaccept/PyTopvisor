@@ -50,8 +50,3 @@ class Topvisor:
 
 
 
-
-from config.settings import Config
-config = Config()
-tv = Topvisor(config.data.get("USER_ID"), config.data.get("TOPVISOR_API"))
-
