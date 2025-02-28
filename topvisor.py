@@ -9,9 +9,9 @@ class Topvisor:
 
     def get_operation_mapping(self):
         """
-        Возвращает словарь маппинга операций.
-        Ключ: имя операции.
-        Значение: кортеж (сервис, метод).
+        Returns a dictionary mapping operations.
+        Key: operation name.
+        Value: tuple (service, method).
         """
         return {
             "get_projects": ("projects", "get_projects"),
@@ -24,11 +24,11 @@ class Topvisor:
 
     def run_task(self, task_name, **kwargs):
         """
-        Универсальный метод для выполнения операций.
+        Universal method for executing operations.
 
-        :param operation_name: Название операции.
-        :param kwargs: Аргументы для операции.
-        :return: Результат выполнения операции.
+        :param task_name: Operation name.
+        :param kwargs: Arguments for the operation.
+        :return: Operation execution result.
         """
 
         operation_mapping = self.get_operation_mapping()
@@ -43,7 +43,7 @@ class Topvisor:
 
         if not method:
             raise AttributeError(
-                f"Метод {method_name} не найден в сервисе {service_name}"
+                f"Method {method_name} not found in service {service_name}"
             )
 
         return method(**kwargs)

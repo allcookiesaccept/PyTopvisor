@@ -1,22 +1,22 @@
 
 class TopvisorAPIError(Exception):
-    """Базовое исключение для API Topvisor."""
+    """Base exception for Topvisor API."""
     pass
 
 class AuthenticationError(TopvisorAPIError):
-    """Исключение для ошибок аутентификации."""
+    """Exception for authentication errors."""
     pass
 
 class RateLimitError(TopvisorAPIError):
-    """Исключение для ошибок превышения лимитов запросов."""
+    """Exception for rate limit errors."""
     pass
 
 class InvalidRequestError(TopvisorAPIError):
-    """Исключение для ошибок валидации запроса."""
+    """Exception for request validation errors."""
     pass
 
 class ServerError(TopvisorAPIError):
-    """Исключение для серверных ошибок."""
+    """Exception for server errors."""
     pass
 
 ERROR_MAPPING = {
