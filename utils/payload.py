@@ -43,11 +43,10 @@ class PayloadFactory:
     @staticmethod
     @add_universal_params
     def projects_get_projects_payload(
-            show_site_stat: Optional[bool] = None,
-            show_searchers_and_regions: Optional[int] = None,
-            include_positions_summary: Optional[bool] = None,
-            ) -> Dict[str, Any] | None:
-
+        show_site_stat: Optional[bool] = None,
+        show_searchers_and_regions: Optional[int] = None,
+        include_positions_summary: Optional[bool] = None,
+    ) -> Dict[str, Any] | None:
         """
         Generates payload for the method get/projects_2/projects.
         :param show_site_stat: Add additional project information (boolean).
@@ -69,11 +68,10 @@ class PayloadFactory:
     @staticmethod
     @add_universal_params
     def projects_get_competitors_payload(
-            project_id: int,
-            only_enabled: Optional[bool] = None,
-            include_project: Optional[bool] = None,
+        project_id: int,
+        only_enabled: Optional[bool] = None,
+        include_project: Optional[bool] = None,
     ) -> Dict[str, Any]:
-
         """
         Generates payload for the method get/projects_2/competitors.
         :param project_id: Project ID.
@@ -92,26 +90,25 @@ class PayloadFactory:
 
         return payload
 
-
     @staticmethod
     @add_universal_params
     def positions_get_history_payload(
-            project_id: int,
-            regions_indexes: List[int],
-            dates: Optional[List[str]] = None,
-            date1: Optional[str] = None,
-            date2: Optional[str] = None,
-            competitors_ids: Optional[List[int]] = None,
-            type_range: Optional[int] = 2,
-            count_dates: Optional[int] = None,
-            only_exists_first_date: Optional[bool] = None,
-            show_headers: Optional[bool] = None,
-            show_exists_dates: Optional[bool] = None,
-            show_visitors: Optional[bool] = None,
-            show_top_by_depth: Optional[int] = None,
-            positions_fields: Optional[List[str]] = None,
-            filter_by_dynamic: Optional[List[str]] = None,
-            filter_by_positions: Optional[List[List[int]]] = None,
+        project_id: int,
+        regions_indexes: List[int],
+        dates: Optional[List[str]] = None,
+        date1: Optional[str] = None,
+        date2: Optional[str] = None,
+        competitors_ids: Optional[List[int]] = None,
+        type_range: Optional[int] = 2,
+        count_dates: Optional[int] = None,
+        only_exists_first_date: Optional[bool] = None,
+        show_headers: Optional[bool] = None,
+        show_exists_dates: Optional[bool] = None,
+        show_visitors: Optional[bool] = None,
+        show_top_by_depth: Optional[int] = None,
+        positions_fields: Optional[List[str]] = None,
+        filter_by_dynamic: Optional[List[str]] = None,
+        filter_by_positions: Optional[List[List[int]]] = None,
     ) -> Dict[str, Any]:
         """
         Generates payload for the method get/positions_2/history.
@@ -177,16 +174,16 @@ class PayloadFactory:
     @staticmethod
     @add_universal_params
     def positions_get_summary_payload(
-            project_id: int,
-            region_index: int,
-            dates: List[str],
-            competitor_id: Optional[int] = None,
-            only_exists_first_date: Optional[bool] = None,
-            show_dynamics: Optional[bool] = None,
-            show_tops: Optional[bool] = None,
-            show_avg: Optional[bool] = None,
-            show_visibility: Optional[bool] = None,
-            show_median: Optional[bool] = None,
+        project_id: int,
+        region_index: int,
+        dates: List[str],
+        competitor_id: Optional[int] = None,
+        only_exists_first_date: Optional[bool] = None,
+        show_dynamics: Optional[bool] = None,
+        show_tops: Optional[bool] = None,
+        show_avg: Optional[bool] = None,
+        show_visibility: Optional[bool] = None,
+        show_median: Optional[bool] = None,
     ) -> Dict[str, Any]:
         """
         Generates payload for the method get/positions_2/summary.
@@ -226,7 +223,6 @@ class PayloadFactory:
             payload["show_median"] = int(show_median)
 
         return payload
-
 
     @staticmethod
     @add_universal_params
@@ -291,13 +287,13 @@ class PayloadFactory:
     @staticmethod
     @add_universal_params
     def positions_get_searchers_regions_payload(
-            project_id: int,
-            searcher_key: Optional[int] = None,
-            name_key: Optional[str] = None,
-            country_code: Optional[str] = None,
-            lang: Optional[str] = None,
-            device: Optional[int] = None,
-            depth: Optional[int] = None,
+        project_id: int,
+        searcher_key: Optional[int] = None,
+        name_key: Optional[str] = None,
+        country_code: Optional[str] = None,
+        lang: Optional[str] = None,
+        device: Optional[int] = None,
+        depth: Optional[int] = None,
     ) -> Dict[str, Any]:
         """
         Generates payload for the method get/positions_2/searchers/regions/export.

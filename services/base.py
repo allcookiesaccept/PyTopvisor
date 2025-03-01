@@ -1,4 +1,6 @@
 from abc import ABC
+
+
 class BaseService(ABC):
     def __init__(self, api_client):
         super().__init__()

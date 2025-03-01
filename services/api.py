@@ -59,7 +59,7 @@ class TopvisorAPI:
         :return: A list of lists containing the data.
         """
 
-        decoded_text = text.encode('raw_unicode_escape').decode('cp1251')
+        decoded_text = text.encode("raw_unicode_escape").decode("cp1251")
         lines = decoded_text.strip().split("\n")
         result = []
 
@@ -79,7 +79,9 @@ class TopvisorAPI:
             detail = error.get("detail", "")
 
             # Логирование ошибки
-            logger.error(f"API Error [{code}]: {message}. Details: {detail}. URL: {url}")
+            logger.error(
+                f"API Error [{code}]: {message}. Details: {detail}. URL: {url}"
+            )
 
             # Выбор исключения на основе кода ошибки
             exception_class = ERROR_MAPPING.get(code, TopvisorAPIError)

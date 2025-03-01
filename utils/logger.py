@@ -1,6 +1,7 @@
 import logging
 from pathlib import Path
 
+
 class Logger:
     _instance = None
 
@@ -25,7 +26,9 @@ class Logger:
         formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 
         # File logging
-        api_error_handler = logging.FileHandler(logs_dir / "api_errors.log", encoding="utf-8")
+        api_error_handler = logging.FileHandler(
+            logs_dir / "api_errors.log", encoding="utf-8"
+        )
         api_error_handler.setLevel(logging.ERROR)
         api_error_handler.setFormatter(formatter)
         self.logger.addHandler(api_error_handler)
@@ -35,7 +38,6 @@ class Logger:
         console_handler.setLevel(logging.INFO)
         console_handler.setFormatter(formatter)
         self.logger.addHandler(console_handler)
-
 
     def get_logger(self):
         """

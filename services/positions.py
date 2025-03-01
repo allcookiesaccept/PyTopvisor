@@ -57,7 +57,9 @@ class PositionsService(BaseService):
         # Validate required parameters
         if not isinstance(project_id, int):
             raise ValueError("project_id must be an integer.")
-        if not isinstance(regions_indexes, list) or not all(isinstance(idx, int) for idx in regions_indexes):
+        if not isinstance(regions_indexes, list) or not all(
+            isinstance(idx, int) for idx in regions_indexes
+        ):
             raise ValueError("regions_indexes must be a list of integers.")
 
         # Validate dates
@@ -65,10 +67,16 @@ class PositionsService(BaseService):
             raise ValueError("Cannot pass both 'dates' and 'date1/date2'.")
         if (date1 and not date2) or (date2 and not date1):
             raise ValueError("Both 'date1' and 'date2' must be specified.")
-        if dates and not all(isinstance(date, str) and len(date) == 10 for date in dates):
-            raise ValueError("All elements in 'dates' must be strings in YYYY-MM-DD format.")
+        if dates and not all(
+            isinstance(date, str) and len(date) == 10 for date in dates
+        ):
+            raise ValueError(
+                "All elements in 'dates' must be strings in YYYY-MM-DD format."
+            )
         if date1 and not isinstance(date1, str) or date2 and not isinstance(date2, str):
-            raise ValueError("Parameters 'date1' and 'date2' must be strings in YYYY-MM-DD format.")
+            raise ValueError(
+                "Parameters 'date1' and 'date2' must be strings in YYYY-MM-DD format."
+            )
 
         # Формирование payload
         try:
@@ -96,17 +104,17 @@ class PositionsService(BaseService):
         return self.send_request(self.endpoints["history"], payload)
 
     def get_summary(
-            self,
-            project_id: int,
-            region_index: int,
-            dates: List[str],
-            competitor_id: Optional[int] = None,
-            only_exists_first_date: Optional[bool] = None,
-            show_dynamics: Optional[bool] = None,
-            show_tops: Optional[bool] = None,
-            show_avg: Optional[bool] = None,
-            show_visibility: Optional[bool] = None,
-            show_median: Optional[bool] = None,
+        self,
+        project_id: int,
+        region_index: int,
+        dates: List[str],
+        competitor_id: Optional[int] = None,
+        only_exists_first_date: Optional[bool] = None,
+        show_dynamics: Optional[bool] = None,
+        show_tops: Optional[bool] = None,
+        show_avg: Optional[bool] = None,
+        show_visibility: Optional[bool] = None,
+        show_median: Optional[bool] = None,
     ):
         """
         Retrieves summary data for the selected project over two dates.
@@ -130,7 +138,9 @@ class PositionsService(BaseService):
         if not isinstance(dates, list) or len(dates) != 2:
             raise ValueError("dates must be a list of two dates.")
         if not all(isinstance(date, str) and len(date) == 10 for date in dates):
-            raise ValueError("All elements in 'dates' must be strings in YYYY-MM-DD format.")
+            raise ValueError(
+                "All elements in 'dates' must be strings in YYYY-MM-DD format."
+            )
 
         try:
             payload = PayloadFactory.positions_get_summary_payload(
@@ -151,18 +161,18 @@ class PositionsService(BaseService):
         return self.send_request(self.endpoints["summary"], payload)
 
     def get_summary_chart(
-            self,
-            project_id: int,
-            region_index: int,
-            dates: Optional[List[str]] = None,
-            date1: Optional[str] = None,
-            date2: Optional[str] = None,
-            competitors_ids: Optional[List[int]] = None,
-            type_range: Optional[int] = None,
-            only_exists_first_date: Optional[bool] = None,
-            show_tops: Optional[bool] = None,
-            show_avg: Optional[bool] = None,
-            show_visibility: Optional[bool] = None,
+        self,
+        project_id: int,
+        region_index: int,
+        dates: Optional[List[str]] = None,
+        date1: Optional[str] = None,
+        date2: Optional[str] = None,
+        competitors_ids: Optional[List[int]] = None,
+        type_range: Optional[int] = None,
+        only_exists_first_date: Optional[bool] = None,
+        show_tops: Optional[bool] = None,
+        show_avg: Optional[bool] = None,
+        show_visibility: Optional[bool] = None,
     ):
         """
         Retrieves data for the summary chart for the selected project.
@@ -188,10 +198,16 @@ class PositionsService(BaseService):
             raise ValueError("Cannot pass both 'dates' and 'date1/date2'.")
         if (date1 and not date2) or (date2 and not date1):
             raise ValueError("Both 'date1' and 'date2' must be specified.")
-        if dates and not all(isinstance(date, str) and len(date) == 10 for date in dates):
-            raise ValueError("All elements in 'dates' must be strings in YYYY-MM-DD format.")
+        if dates and not all(
+            isinstance(date, str) and len(date) == 10 for date in dates
+        ):
+            raise ValueError(
+                "All elements in 'dates' must be strings in YYYY-MM-DD format."
+            )
         if date1 and not isinstance(date1, str) or date2 and not isinstance(date2, str):
-            raise ValueError("Parameters 'date1' and 'date2' must be strings in YYYY-MM-DD format.")
+            raise ValueError(
+                "Parameters 'date1' and 'date2' must be strings in YYYY-MM-DD format."
+            )
 
         try:
             payload = PayloadFactory.positions_get_summary_chart_payload(
@@ -213,14 +229,14 @@ class PositionsService(BaseService):
         return self.send_request(self.endpoints["summary_chart"], payload)
 
     def get_searchers_regions(
-            self,
-            project_id: int,
-            searcher_key: Optional[int] = None,
-            name_key: Optional[str] = None,
-            country_code: Optional[str] = None,
-            lang: Optional[str] = None,
-            device: Optional[int] = None,
-            depth: Optional[int] = None,
+        self,
+        project_id: int,
+        searcher_key: Optional[int] = None,
+        name_key: Optional[str] = None,
+        country_code: Optional[str] = None,
+        lang: Optional[str] = None,
+        device: Optional[int] = None,
+        depth: Optional[int] = None,
     ):
         """
         Exports a list of regions added to the project.
@@ -240,7 +256,9 @@ class PositionsService(BaseService):
             raise ValueError("searcher_key must be an integer.")
         if name_key and not isinstance(name_key, str):
             raise ValueError("name_key must be a string.")
-        if country_code and (not isinstance(country_code, str) or len(country_code) != 2):
+        if country_code and (
+            not isinstance(country_code, str) or len(country_code) != 2
+        ):
             raise ValueError("country_code must be a two-letter country code.")
         if lang and not isinstance(lang, str):
             raise ValueError("lang must be a string.")
@@ -262,4 +280,6 @@ class PositionsService(BaseService):
         except Exception as e:
             raise RuntimeError(f"Error while forming payload: {e}")
 
-        return self.send_text_request(self.endpoints["searchers_regions_export"], payload)
+        return self.send_text_request(
+            self.endpoints["searchers_regions_export"], payload
+        )

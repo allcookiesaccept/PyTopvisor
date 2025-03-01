@@ -1,23 +1,32 @@
-
 class TopvisorAPIError(Exception):
     """Base exception for Topvisor API."""
+
     pass
+
 
 class AuthenticationError(TopvisorAPIError):
     """Exception for authentication errors."""
+
     pass
+
 
 class RateLimitError(TopvisorAPIError):
     """Exception for rate limit errors."""
+
     pass
+
 
 class InvalidRequestError(TopvisorAPIError):
     """Exception for request validation errors."""
+
     pass
+
 
 class ServerError(TopvisorAPIError):
     """Exception for server errors."""
+
     pass
+
 
 ERROR_MAPPING = {
     429: RateLimitError,

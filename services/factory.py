@@ -1,6 +1,7 @@
 from .projects import ProjectsService
 from .positions import PositionsService
 
+
 class ServiceFactory:
     def __init__(self, api_client):
         self.api_client = api_client
@@ -17,4 +18,3 @@ class ServiceFactory:
             else:
                 raise ValueError(f"Unknown service: {service_name}")
         return self._services[service_name]
-
