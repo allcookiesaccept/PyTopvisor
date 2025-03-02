@@ -20,11 +20,5 @@ setup(
     install_requires=[
         "requests>=2.32.3",
     ],
-    extras_require={
-        "dev": [
-            "black==25.1.0",
-            "mypy==1.9.0",
-        ],
-    },
     include_package_data=True,
 )
