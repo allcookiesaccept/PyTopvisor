@@ -7,7 +7,6 @@ def add_universal_params(func: Callable) -> Callable:
     Decorator to add universal parameters to the payload.
     Supported parameters: limit, offset, fields, filters, id, orders.
     """
-
     @wraps(func)
     def wrapper(*args, **kwargs) -> Dict[str, Any]:
         # Call the main method to get the base payload

@@ -44,3 +44,4 @@ class ProjectsService(BaseService):
         )
 
         return self.send_request(self.endpoints["competitors"], payload)
+

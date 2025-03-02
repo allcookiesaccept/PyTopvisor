@@ -142,6 +142,7 @@ class PositionsService(BaseService):
                 "All elements in 'dates' must be strings in YYYY-MM-DD format."
             )
 
+
         try:
             payload = PayloadFactory.positions_get_summary_payload(
                 project_id=project_id,

@@ -86,3 +86,4 @@ class TopvisorAPI:
             # Выбор исключения на основе кода ошибки
             exception_class = ERROR_MAPPING.get(code, TopvisorAPIError)
             raise exception_class(f"[{code}] {message}. {detail}")
+
