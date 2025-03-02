@@ -1,5 +1,5 @@
-from .projects import ProjectsService
-from .positions import PositionsService
+from pytopvisor.services.projects import ProjectsService
+from pytopvisor.services.positions import PositionsService
 
 
 class ServiceFactory:

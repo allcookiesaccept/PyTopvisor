@@ -1,5 +1,5 @@
-from services.api import TopvisorAPI
-from services.factory import ServiceFactory
+from pytopvisor.services.api import TopvisorAPI
+from pytopvisor.services.factory import ServiceFactory
 
 
 class Topvisor:
