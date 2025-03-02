@@ -7,8 +7,10 @@ In the current version, only GET methods of the API are supported, as well as tw
 
 ## Initializing the Client
 To get started, you need to create an instance of the Topvisor class, passing your `user_id` and `api_key`.
+
 ```python
-from topvisor import Topvisor
+from pytopvisor.topvisor import Topvisor
+
 topvisor = Topvisor(user_id="your_user_id", api_key="your_api_key")
 ```
 
@@ -123,7 +125,8 @@ The client automatically handles API errors and raises appropriate exceptions. B
 Для начала вам нужно создать экземпляр класса Topvisor, передав в него ваш user_id и api_key.
 
 ```python
-from topvisor import Topvisor
+from pytopvisor.topvisor import Topvisor
+
 topvisor = Topvisor(user_id="your_user_id", api_key="your_api_key")
 ```
 

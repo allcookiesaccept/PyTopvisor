@@ -1,5 +1,5 @@
 import requests
-from utils.logger import logger
+from pytopvisor.utils.logger import logger
 from exceptions import *
 
 
