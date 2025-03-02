@@ -78,12 +78,10 @@ class TopvisorAPI:
             message = error.get("string", "Unknown error")
             detail = error.get("detail", "")
 
-            # Логирование ошибки
             logger.error(
                 f"API Error [{code}]: {message}. Details: {detail}. URL: {url}"
             )
 
-            # Выбор исключения на основе кода ошибки
             exception_class = ERROR_MAPPING.get(code, TopvisorAPIError)
             raise exception_class(f"[{code}] {message}. {detail}")
 
