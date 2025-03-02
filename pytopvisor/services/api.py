@@ -1,6 +1,9 @@
 import requests
 from pytopvisor.utils.logger import logger
-from exceptions import *
+from pytopvisor.utils.exceptions import (
+    TopvisorAPIError,
+    ERROR_MAPPING
+)
 
 
 class TopvisorAPI:
