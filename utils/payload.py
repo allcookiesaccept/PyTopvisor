@@ -28,7 +28,7 @@ def add_universal_params(func: Callable) -> Callable:
                 value = kwargs[param]
                 if not isinstance(value, param_type):
                     raise ValueError(
-                        f"Параметр '{param}' должен быть типа {param_type.__name__}"
+                        f"Param '{param}' must be {param_type.__name__}"
                     )
                 payload[param] = value
 
