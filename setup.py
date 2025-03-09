@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as f:
 # Основные метаданные
 setup(
     name="pytopvisor",
-    version="0.1.4",
+    version="0.1.5",
     author="Dmitry Kravtsov",
     author_email="dmitry.pushpull@gmail.com",
     description="A Python client for interacting with the Topvisor API.",

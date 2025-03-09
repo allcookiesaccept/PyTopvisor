@@ -25,7 +25,7 @@ class SnapshotsService(BaseService):
         count_dates: Optional[int] = None,
         show_exists_dates: Optional[bool] = None,
         show_ams: Optional[bool] = None,
-        positions_fields: Optional[List[str]] = None,
+        positions_fields: Optional[List[str]] = ["url", "domain", "snippet_title", "snippet_body"],
         **kwargs
     ):
         """
