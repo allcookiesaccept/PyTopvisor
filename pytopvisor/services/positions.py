@@ -1,6 +1,8 @@
-from .base import BaseService
+from pytopvisor.services.base import BaseService
 from pytopvisor.utils.payload import PayloadFactory
+from pytopvisor.utils.validators import Validator
 from typing import List, Optional
+from inspect import signature
 
 
 class PositionsService(BaseService):
@@ -15,7 +17,7 @@ class PositionsService(BaseService):
             "searchers_regions_export": "/v2/json/get/positions_2/searchers/regions/export",
         }
 
-    def get_history(
+    def get_positions_history(
         self,
         project_id: int,
         regions_indexes: List[int],
@@ -33,6 +35,7 @@ class PositionsService(BaseService):
         positions_fields: Optional[List[str]] = None,
         filter_by_dynamic: Optional[List[str]] = None,
         filter_by_positions: Optional[List[List[int]]] = None,
+        **kwargs
     ):
         """
         Retrieves the history of position checks.
@@ -54,56 +57,15 @@ class PositionsService(BaseService):
         :param filter_by_positions: Filter by keyword positions.
         :return: Request result.
         """
-        # Validate required parameters
-        if not isinstance(project_id, int):
-            raise ValueError("project_id must be an integer.")
-        if not isinstance(regions_indexes, list) or not all(
-            isinstance(idx, int) for idx in regions_indexes
-        ):
-            raise ValueError("regions_indexes must be a list of integers.")
 
-        # Validate dates
-        if dates and (date1 or date2):
-            raise ValueError("Cannot pass both 'dates' and 'date1/date2'.")
-        if (date1 and not date2) or (date2 and not date1):
-            raise ValueError("Both 'date1' and 'date2' must be specified.")
-        if dates and not all(
-            isinstance(date, str) and len(date) == 10 for date in dates
-        ):
-            raise ValueError(
-                "All elements in 'dates' must be strings in YYYY-MM-DD format."
-            )
-        if date1 and not isinstance(date1, str) or date2 and not isinstance(date2, str):
-            raise ValueError(
-                "Parameters 'date1' and 'date2' must be strings in YYYY-MM-DD format."
-            )
+        Validator.validate("get_positions_history", **locals())
+        payload = PayloadFactory.positions_get_history_payload(**locals())
+        fetch_all = kwargs.get("fetch_all", False)
+        limit = kwargs.get("limit", 10000)
+        return self.send_request(self.endpoints["history"], payload, fetch_all=fetch_all, limit=limit)
 
-        # Формирование payload
-        try:
-            payload = PayloadFactory.positions_get_history_payload(
-                project_id=project_id,
-                regions_indexes=regions_indexes,
-                dates=dates,
-                date1=date1,
-                date2=date2,
-                competitors_ids=competitors_ids,
-                type_range=type_range,
-                count_dates=count_dates,
-                only_exists_first_date=only_exists_first_date,
-                show_headers=show_headers,
-                show_exists_dates=show_exists_dates,
-                show_visitors=show_visitors,
-                show_top_by_depth=show_top_by_depth,
-                positions_fields=positions_fields,
-                filter_by_dynamic=filter_by_dynamic,
-                filter_by_positions=filter_by_positions,
-            )
-        except Exception as e:
-            raise RuntimeError(f"Error while forming payload: {e}")
 
-        return self.send_request(self.endpoints["history"], payload)
-
-    def get_summary(
+    def get_positions_summary(
         self,
         project_id: int,
         region_index: int,
@@ -115,6 +77,7 @@ class PositionsService(BaseService):
         show_avg: Optional[bool] = None,
         show_visibility: Optional[bool] = None,
         show_median: Optional[bool] = None,
+        **kwargs
     ):
         """
         Retrieves summary data for the selected project over two dates.
@@ -130,38 +93,17 @@ class PositionsService(BaseService):
         :param show_median: Add median position (boolean).
         :return: Request result.
         """
-        # Validate required parameters
-        if not isinstance(project_id, int):
-            raise ValueError("project_id must be an integer.")
-        if not isinstance(region_index, int):
-            raise ValueError("region_index must be an integer.")
-        if not isinstance(dates, list) or len(dates) != 2:
-            raise ValueError("dates must be a list of two dates.")
-        if not all(isinstance(date, str) and len(date) == 10 for date in dates):
-            raise ValueError(
-                "All elements in 'dates' must be strings in YYYY-MM-DD format."
-            )
+
+        Validator.validate("get_positions_summary", **locals())
+        payload = PayloadFactory.positions_get_summary_payload(**locals())
+        fetch_all = kwargs.get("fetch_all", False)
+        limit = kwargs.get("limit", 10000)
+
+        return self.send_request(self.endpoints["summary"], payload, fetch_all=fetch_all, limit=limit)
 
 
-        try:
-            payload = PayloadFactory.positions_get_summary_payload(
-                project_id=project_id,
-                region_index=region_index,
-                dates=dates,
-                competitor_id=competitor_id,
-                only_exists_first_date=only_exists_first_date,
-                show_dynamics=show_dynamics,
-                show_tops=show_tops,
-                show_avg=show_avg,
-                show_visibility=show_visibility,
-                show_median=show_median,
-            )
-        except Exception as e:
-            raise RuntimeError(f"Error while forming payload: {e}")
 
-        return self.send_request(self.endpoints["summary"], payload)
-
-    def get_summary_chart(
+    def get_positions_summary_chart(
         self,
         project_id: int,
         region_index: int,
@@ -174,6 +116,7 @@ class PositionsService(BaseService):
         show_tops: Optional[bool] = None,
         show_avg: Optional[bool] = None,
         show_visibility: Optional[bool] = None,
+        **kwargs
     ):
         """
         Retrieves data for the summary chart for the selected project.
@@ -190,44 +133,12 @@ class PositionsService(BaseService):
         :param show_visibility: Add visibility (boolean).
         :return: Request result.
         """
-        # Validate required parameters
-        if not isinstance(project_id, int):
-            raise ValueError("project_id must be an integer.")
-        if not isinstance(region_index, int):
-            raise ValueError("region_index must be an integer.")
-        if dates and (date1 or date2):
-            raise ValueError("Cannot pass both 'dates' and 'date1/date2'.")
-        if (date1 and not date2) or (date2 and not date1):
-            raise ValueError("Both 'date1' and 'date2' must be specified.")
-        if dates and not all(
-            isinstance(date, str) and len(date) == 10 for date in dates
-        ):
-            raise ValueError(
-                "All elements in 'dates' must be strings in YYYY-MM-DD format."
-            )
-        if date1 and not isinstance(date1, str) or date2 and not isinstance(date2, str):
-            raise ValueError(
-                "Parameters 'date1' and 'date2' must be strings in YYYY-MM-DD format."
-            )
+        Validator.validate("get_positions_summary_chart", **locals())
+        payload = PayloadFactory.positions_get_summary_chart_payload(**locals())
+        fetch_all = kwargs.get("fetch_all", False)
+        limit = kwargs.get("limit", 10000)
+        return self.send_request(self.endpoints["summary_chart"], payload, fetch_all=fetch_all, limit=limit)
 
-        try:
-            payload = PayloadFactory.positions_get_summary_chart_payload(
-                project_id=project_id,
-                region_index=region_index,
-                dates=dates,
-                date1=date1,
-                date2=date2,
-                competitors_ids=competitors_ids,
-                type_range=type_range,
-                only_exists_first_date=only_exists_first_date,
-                show_tops=show_tops,
-                show_avg=show_avg,
-                show_visibility=show_visibility,
-            )
-        except Exception as e:
-            raise RuntimeError(f"Error while forming payload: {e}")
-
-        return self.send_request(self.endpoints["summary_chart"], payload)
 
     def get_searchers_regions(
         self,
@@ -238,6 +149,7 @@ class PositionsService(BaseService):
         lang: Optional[str] = None,
         device: Optional[int] = None,
         depth: Optional[int] = None,
+        **kwargs
     ):
         """
         Exports a list of regions added to the project.
@@ -250,36 +162,8 @@ class PositionsService(BaseService):
         :param depth: Check depth.
         :return: Request result.
         """
-        # Validate parameters
-        if not isinstance(project_id, int):
-            raise ValueError("project_id must be an integer.")
-        if searcher_key and not isinstance(searcher_key, int):
-            raise ValueError("searcher_key must be an integer.")
-        if name_key and not isinstance(name_key, str):
-            raise ValueError("name_key must be a string.")
-        if country_code and (
-            not isinstance(country_code, str) or len(country_code) != 2
-        ):
-            raise ValueError("country_code must be a two-letter country code.")
-        if lang and not isinstance(lang, str):
-            raise ValueError("lang must be a string.")
-        if device is not None and device not in (0, 1, 2):
-            raise ValueError("device must be one of the values: 0, 1, 2.")
-        if depth is not None and not isinstance(depth, int):
-            raise ValueError("depth must be an integer.")
-
-        try:
-            payload = PayloadFactory.positions_get_searchers_regions_payload(
-                project_id=project_id,
-                searcher_key=searcher_key,
-                name_key=name_key,
-                country_code=country_code,
-                lang=lang,
-                device=device,
-                depth=depth,
-            )
-        except Exception as e:
-            raise RuntimeError(f"Error while forming payload: {e}")
+        Validator.validate("get_searchers_regions", **locals())
+        payload = PayloadFactory.positions_get_searchers_regions_payload(**locals())
 
         return self.send_text_request(
             self.endpoints["searchers_regions_export"], payload

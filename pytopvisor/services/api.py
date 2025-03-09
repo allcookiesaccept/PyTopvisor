@@ -19,6 +19,7 @@ class TopvisorAPI:
 
         try:
             url = f"{self.base_url}{endpoint}"
+            payload = payload or {}
             response = requests.post(url, headers=self.headers, json=payload)
             response.raise_for_status()
 
@@ -81,10 +82,42 @@ class TopvisorAPI:
             message = error.get("string", "Unknown error")
             detail = error.get("detail", "")
 
-            logger.error(
-                f"API Error [{code}]: {message}. Details: {detail}. URL: {url}"
-            )
+            if code in (429,):  # Rate limit
+                logger.warning(f"API Warning [{code}]: {message}. Details: {detail}. URL: {url}")
+            elif code in (503,):  # Server error
+                logger.critical(f"API Critical [{code}]: {message}. Details: {detail}. URL: {url}")
+            else:
+                logger.error(f"API Error [{code}]: {message}. Details: {detail}. URL: {url}")
 
             exception_class = ERROR_MAPPING.get(code, TopvisorAPIError)
             raise exception_class(f"[{code}] {message}. {detail}")
 
+    def fetch_all(self, endpoint, payload, limit=10000):
+        """
+        Fetches all data from an endpoint with pagination.
+        :param endpoint: API endpoint.
+        :param payload: Request payload.
+        :param limit: Number of items per request (default: 10000).
+        :return: List of all results.
+        """
+        result = []
+        payload = payload.copy()
+        payload["limit"] = limit
+        payload["offset"] = 0
+        total = None
+
+        while True:
+            data = self.send_request(endpoint, payload)
+            if "result" not in data or not isinstance(data["result"], list):
+                raise TopvisorAPIError("Unexpected API response format")
+
+            result.extend(data["result"])
+            total = data.get("total", total)
+
+            if total is not None and len(result) >= total:
+                break
+            if len(data["result"]) < limit:
+                break
+
+            payload["offset"] += limit
+        return {"result": result, "total": total}

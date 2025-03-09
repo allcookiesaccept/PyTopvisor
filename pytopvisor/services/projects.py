@@ -1,5 +1,6 @@
-from .base import BaseService
+from pytopvisor.services.base import BaseService
 from pytopvisor.utils.payload import PayloadFactory
+from pytopvisor.utils.validators import Validator
 from typing import Optional
 
 
@@ -16,32 +17,29 @@ class ProjectsService(BaseService):
         show_site_stat: Optional[bool] = None,
         show_searchers_and_regions: Optional[int] = None,
         include_positions_summary: Optional[bool] = None,
+        **kwargs
     ):
         """
         Retrieves a list of projects.
         """
-        payload = PayloadFactory.projects_get_projects_payload(
-            show_site_stat=show_site_stat,
-            show_searchers_and_regions=show_searchers_and_regions,
-            include_positions_summary=include_positions_summary,
-        )
-
-        return self.send_request(self.endpoints["projects"], payload)
+        Validator.validate("get_projects", **locals())
+        payload = PayloadFactory.projects_get_projects_payload(**locals())
+        fetch_all = kwargs.get("fetch_all", False)
+        limit = kwargs.get("limit", 10000)
+        return self.send_request(self.endpoints["projects"], payload, fetch_all=fetch_all, limit=limit)
 
     def get_competitors(
         self,
         project_id: int,
         only_enabled: Optional[bool] = None,
         include_project: Optional[bool] = None,
+        **kwargs
     ):
         """
         Retrieves a list of competitors.
         """
-        payload = PayloadFactory.projects_get_competitors_payload(
-            project_id=project_id,
-            only_enabled=only_enabled,
-            include_project=include_project,
-        )
-
-        return self.send_request(self.endpoints["competitors"], payload)
-
+        Validator.validate("get_competitors", **locals())
+        payload = PayloadFactory.projects_get_competitors_payload(**locals())
+        fetch_all = kwargs.get("fetch_all", False)
+        limit = kwargs.get("limit", 10000)
+        return self.send_request(self.endpoints["competitors"], payload, fetch_all=fetch_all, limit=limit)

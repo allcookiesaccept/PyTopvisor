@@ -16,19 +16,21 @@ class Topvisor:
         return {
             "get_projects": ("projects", "get_projects"),
             "get_competitors": ("projects", "get_competitors"),
-            "get_history": ("positions", "get_history"),
-            "get_summary": ("positions", "get_summary"),
-            "get_summary_chart": ("positions", "get_summary_chart"),
+            "get_positions_history": ("positions", "get_positions_history"),
+            "get_positions_summary": ("positions", "get_positions_summary"),
+            "get_positions_summary_chart": ("positions", "get_positions_summary_chart"),
             "get_searchers_regions": ("positions", "get_searchers_regions"),
+            "get_snapshots_history": ("snapshots", "get_snapshots_history"),
         }
 
-    def run_task(self, task_name, **kwargs):
+    def run_task(self, task_name, fetch_all=False, limit=10000, **kwargs):
         """
         Universal method for executing operations.
-
         :param task_name: Operation name.
+        :param fetch_all: If True, fetch all paginated data (default: False).
+        :param limit: Number of items per request if fetch_all=True (default: 10000).
         :param kwargs: Arguments for the operation.
-        :return: Operation execution result.
+        :return: Operation execution result (single response or all paginated data).
         """
 
         operation_mapping = self.get_operation_mapping()
@@ -45,5 +47,6 @@ class Topvisor:
             raise AttributeError(
                 f"Method {method_name} not found in service {service_name}"
             )
-
+        kwargs["fetch_all"] = fetch_all
+        kwargs["limit"] = limit
         return method(**kwargs)

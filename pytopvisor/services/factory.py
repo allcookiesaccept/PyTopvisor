@@ -1,6 +1,6 @@
 from pytopvisor.services.projects import ProjectsService
 from pytopvisor.services.positions import PositionsService
-
+from pytopvisor.services.snapshots import SnapshotsService
 
 class ServiceFactory:
     def __init__(self, api_client):
@@ -15,7 +15,9 @@ class ServiceFactory:
                 self._services[service_name] = ProjectsService(self.api_client)
             elif service_name == "positions":
                 self._services[service_name] = PositionsService(self.api_client)
+            elif service_name == "snapshots":
+                self._services[service_name] = SnapshotsService(self.api_client)
+
             else:
                 raise ValueError(f"Unknown service: {service_name}")
         return self._services[service_name]
-
